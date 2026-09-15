@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tourism Website</title>
+<style>
+:root{
+  --primary:#0e7c66; --accent:#f2a63b; --bg:#faf9f6; --card:#ffffff;
+  --text:#222; --muted:#6b7280; --radius:14px;
+  --fontAll:'Segoe UI',system-ui,sans-serif;
+  --fontHeader:var(--fontAll); --fontHead:var(--fontAll); --fontBody:var(--fontAll);
+  --fontNav:var(--fontHeader); --fontHero:var(--fontHead); --fontButton:var(--fontHead);
+  --fontFooter:var(--fontBody); --fontAdmin:'Segoe UI',sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--fontAll,'Segoe UI'),system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;font-size:var(--fontScale,16px)}
+h1,h2,h3,.logo-text,.sec-title{font-family:var(--fontHead, var(--fontAll), inherit)}
+header,header *{font-family:var(--fontHeader, var(--fontAll), sans-serif)}
+nav a{font-family:var(--fontNav,var(--fontHeader),sans-serif)}
+.hero h1,.hero p{font-family:var(--fontHero,var(--fontHead),sans-serif)}
+.btn,.badge{font-family:var(--fontButton,var(--fontHead),sans-serif)}
+.card p,.announce time,.sec-sub,.detail-body,.d-long,.info-line{font-family:var(--fontBody,var(--fontAll),sans-serif)}
+footer,footer *{font-family:var(--fontFooter,var(--fontBody),sans-serif)}
+#panel,#addWin,#loginModal{font-family:var(--fontAdmin,'Segoe UI'),sans-serif}
+img{max-width:100%;display:block}
+.container{max-width:1100px;margin:0 auto;padding:0 20px}
+section{padding:56px 0}
+h2.sec-title{font-size:2rem;margin-bottom:8px}
+p.sec-sub{color:var(--muted);margin-bottom:28px}
+
+/* HEADER */
+header{background:var(--primary);color:#fff;box-shadow:0 2px 10px rgba(0,0,0,.15);position:sticky;top:0;z-index:50}
+.header-inner{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;max-width:1100px;margin:0 auto;flex-wrap:wrap;gap:10px}
+.logo-wrap{display:flex;align-items:center;gap:12px}
+.logo-img{height:48px;width:auto;border-radius:8px}
+.logo-text{font-size:1.4rem;font-weight:700;letter-spacing:.5px}
+nav a{color:#fff;text-decoration:none;margin-left:18px;font-weight:500;opacity:.9}
+nav a:hover{opacity:1;text-decoration:underline}
+
+/* HERO */
+.hero{position:relative;text-align:center;color:#fff;padding:110px 20px;background-size:cover;background-position:center}
+.hero::before{content:"";position:absolute;inset:0;background:rgba(0,0,0,.45)}
+.hero>*{position:relative}
+.hero h1{font-size:3rem;margin-bottom:12px;text-shadow:0 2px 8px rgba(0,0,0,.4)}
+.hero p{font-size:1.2rem;max-width:640px;margin:0 auto}
+.btn{display:inline-block;background:var(--accent);color:#222;border:none;padding:12px 28px;border-radius:30px;font-size:1rem;font-weight:600;cursor:pointer;text-decoration:none;margin-top:18px}
+.btn:hover{filter:brightness(1.08)}
+
+/* CARDS */
+.grid{display:grid;gap:24px}
+.grid-3{grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+.grid-2{grid-template-columns:repeat(auto-fit,minmax(340px,1fr))}
+.card{background:var(--card);border-radius:var(--radius);overflow:hidden;box-shadow:0 3px 14px rgba(0,0,0,.08);transition:transform .2s}
+.card:hover{transform:translateY(-4px)}
+.card img{height:190px;width:100%;object-fit:cover}
+.card-body{padding:20px}
+.card h3{margin-bottom:8px}
+.card p{color:var(--muted);font-size:.95rem}
+.badge{display:inline-block;background:var(--accent);color:#222;font-size:.75rem;font-weight:700;padding:3px 10px;border-radius:20px;margin-bottom:8px}
+.icon-big{font-size:2.2rem}
+
+/* ANNOUNCEMENT */
+.announce{background:#fff6e6;border-left:6px solid var(--accent);padding:18px 24px;border-radius:8px;margin-bottom:8px;position:relative}
+.announce h3{margin-bottom:4px}
+.announce time{color:var(--muted);font-size:.85rem}
+
+/* CONTACT */
+.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:32px}
+.contact-grid form{display:flex;flex-direction:column;gap:14px}
+input,textarea{padding:12px;border:1px solid #ddd;border-radius:8px;font:inherit;width:100%}
+input:focus,textarea:focus{outline:2px solid var(--primary)}
+.info-line{margin:10px 0;display:flex;gap:10px;align-items:center}
+
+/* FOOTER */
+footer{background:#1b2b28;color:#cfd8d5;text-align:center;padding:28px 20px;margin-top:40px}
+
+/* ADMIN */
+#adminBar{position:fixed;bottom:0;left:0;right:0;background:#111;color:#fff;display:none;justify-content:center;align-items:center;gap:14px;padding:10px;z-index:100;flex-wrap:wrap}
+body.admin #adminBar{display:flex}
+body.admin [contenteditable]{outline:1px dashed rgba(14,124,102,.6);outline-offset:3px;min-height:1em}
+body.admin .edit-hint{display:block}
+.edit-hint{display:none;font-size:.75rem;color:var(--accent);font-weight:700}
+#panel{display:none;position:fixed;top:0;right:0;width:380px;max-width:95vw;height:100vh;background:#fff;box-shadow:-4px 0 24px rgba(0,0,0,.25);z-index:200;overflow-y:auto;padding:24px}
+#panel.open{display:block}
+#panel h3{margin:18px 0 8px}
+#panel label{display:block;font-size:.85rem;font-weight:600;margin:8px 0 4px}
+#overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:150}
+#overlay.open{display:block}
+.add-del{display:flex;justify-content:space-between;align-items:center;margin-top:24px;gap:10px}
+.del-btn{background:#e05555;color:#fff;border:none;padding:8px 14px;border-radius:8px;cursor:pointer}
+.add-btn{background:var(--primary);color:#fff;border:none;padding:8px 14px;border-radius:8px;cursor:pointer}
+#loginModal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:300;align-items:center;justify-content:center}
+#loginModal.open{display:flex}
+#loginModal .box{background:#fff;padding:32px;border-radius:14px;width:320px;text-align:center}
+.tag-chip{display:inline-flex;align-items:center;gap:6px;background:#eee;border-radius:20px;padding:4px 12px;margin:4px;font-size:.85rem}
+.tag-chip button{border:none;background:none;cursor:pointer;font-weight:700}
+/* delete button on cards (admin only) */
+.card{position:relative}
+.del-card{display:none;position:absolute;top:10px;right:10px;background:#e05555;color:#fff;border:none;border-radius:50%;width:32px;height:32px;font-size:1rem;cursor:pointer;z-index:5;font-weight:700}
+body.admin .del-card{display:block}
+/* card detail "page" */
+#cardPage{display:none}
+#cardPage.open{display:block}
+.detail-hero img{height:340px;width:100%;object-fit:cover;border-radius:var(--radius);box-shadow:0 4px 18px rgba(0,0,0,.12)}
+.detail-body{max-width:760px;margin:0 auto;padding:28px 20px}
+.detail-body .badge{margin-bottom:12px}
+.admin-field{margin:14px 0}
+.admin-field label{display:block;font-size:.85rem;font-weight:600;margin-bottom:4px}
+.admin-field input{width:100%}
+.back-link{display:inline-block;margin:20px;color:var(--primary);font-weight:600;text-decoration:none;cursor:pointer}
+.back-link:hover{text-decoration:underline}
+/* per-section add button (admin only) */
+.sec-head{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
+.add-sec{display:none}
+body.admin .add-sec{display:inline-block}
+/* inline image-replace button on cards (admin only) */
+.img-up{display:none;position:absolute;top:10px;right:50px;background:#fff;border:1px solid #ddd;border-radius:50%;width:32px;height:32px;cursor:pointer;z-index:5;font-size:.9rem}
+body.admin .img-up{display:block}
+.img-ph{height:190px;background:#e8f0ee;display:flex;align-items:center;justify-content:center;color:#7c948e;font-size:.9rem;flex-direction:column;gap:6px}
+/* detail page extras: gallery, meta, long description, lightbox */
+.detail-meta{margin-top:10px;display:flex;gap:18px;flex-wrap:wrap;font-weight:600;color:var(--primary)}
+.d-long{margin-top:14px;white-space:pre-line}
+.gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-top:20px}
+.gallery img{height:120px;width:100%;object-fit:cover;border-radius:8px;cursor:zoom-in;box-shadow:0 2px 8px rgba(0,0,0,.1)}
+.gallery-item{position:relative}
+.gallery-item .del-card{top:6px;right:6px}
+#lightbox{display:none;position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:400;align-items:center;justify-content:center;cursor:zoom-out}
+#lightbox.open{display:flex}
+#lightbox img{max-width:92vw;max-height:88vh;border-radius:8px;box-shadow:0 6px 40px rgba(0,0,0,.6)}
+.lb-close{position:absolute;top:18px;right:26px;color:#fff;font-size:1.8rem;cursor:pointer}
+/* floating add-card window (draggable modal) */
+#addWin{display:none;position:fixed;top:60px;left:50%;transform:translateX(-50%);width:440px;max-width:94vw;max-height:88vh;overflow-y:auto;background:#fff;border-radius:14px;box-shadow:0 12px 50px rgba(0,0,0,.35);z-index:500}
+#addWin.open{display:block}
+#addWin .aw-head{display:flex;justify-content:space-between;align-items:center;background:var(--primary);color:#fff;padding:12px 16px;border-radius:14px 14px 0 0;cursor:move;user-select:none}
+#addWin .aw-head h3{margin:0;font-size:1rem}
+#addWin .aw-head button{background:none;border:none;color:#fff;font-size:1.1rem;cursor:pointer}
+#addWin .aw-body{padding:16px}
+.aw-thumbs{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.aw-thumbs img{height:60px;width:80px;object-fit:cover;border-radius:6px}
+@media(max-width:760px){.contact-grid{grid-template-columns:1fr}.hero h1{font-size:2rem}}
+</style>
+</head>
+<body>
+
+<!-- ============ CARD DETAIL PAGE (opens on card click) ============ -->
+<div id="cardPage">
+  <a class="back-link" href="#" onclick="goBackHome();return false;">← Back to home</a>
+  <div class="detail-hero container"><img id="dImg" src="" alt="Content image"></div>
+  <div class="detail-body">
+    <span class="badge" id="dTag"></span>
+    <h2 id="dTitle"></h2>
+    <div id="dMeta" class="detail-meta"></div>
+    <p id="dText" style="margin-top:10px;color:var(--muted)"></p>
+    <p id="dLong" class="d-long"></p>
+    <div id="dIcon" class="icon-big"></div>
+    <div id="dGallery" class="gallery"></div>
+    <div id="dAdminFields"></div>
+  </div>
+</div>
+
+<!-- lightbox for viewing photos -->
+<div id="lightbox" onclick="this.classList.remove('open')">
+  <img id="lightboxImg" src="" alt="Expanded content image">
+  <span class="lb-close">✕</span>
+</div>
+
+<!-- ============ MAIN SITE ============ -->
+<div id="mainSite">
+<header>
+ <div class="header-inner">
+    <div class="logo-wrap" id="logoWrap">
+      <img id="logoImg" class="logo-img" src="" alt="logo" style="display:none">
+      <span class="logo-text" id="siteName" data-editable data-editable-key="siteNameText">Tourism Website</span>
+    </div>
+    <nav id="mainNav">
+      <a href="#hero">Home</a>
+      <a href="#features">About</a>
+      <a href="#announce">Announcements</a>
+      <a href="#featured">Destinations</a>
+      <a href="#news">Travel News</a>
+      <a href="#latest">Tours &amp; Offers</a>
+      <a href="#contact">Contact</a>
+    </nav>
+ </div>
+</header>
+
+<!-- ============ HERO ============ -->
+<div class="hero" id="hero" style="background-image:none">
+ <h1 data-editable data-editable-key="heroTitle" id="heroTitle">Welcome to Our Destination</h1>
+ <p data-editable data-editable-key="heroSub" id="heroSub">Discover destinations, travel information, tours, and local experiences.</p>
+ <a class="btn" href="#featured" id="heroBtn">Explore Destinations</a>
+</div>
+
+<!-- ============ FEATURES ============ -->
+<section id="features">
+ <div class="container">
+    <div class="sec-head"><div><h2 class="sec-title" data-editable data-editable-key="featuresTitle">About</h2>
+    <p class="sec-sub" data-editable data-editable-key="featuresSub">Learn more about the destination and what makes it worth visiting.</p></div>
+    <button type="button" class="add-btn add-sec" onclick="openAddWin('features')">+ Add About Item</button></div>
+    <div class="grid grid-3" id="featuresGrid"></div>
+ </div>
+</section>
+
+<!-- ============ ANNOUNCEMENTS ============ -->
+<section id="announce" style="background:#fff">
+ <div class="container">
+    <div class="sec-head"><div><h2 class="sec-title" data-editable data-editable-key="announceTitle">Announcements</h2>
+    <p class="sec-sub" data-editable data-editable-key="announceSub">Latest announcements, updates, and important visitor information.</p></div>
+    <button type="button" class="add-btn add-sec" onclick="openAddWin('announce')">+ Add Announcement</button></div>
+    <div id="announceList"></div>
+ </div>
+</section>
+
+<!-- ============ FEATURED ============ -->
+<section id="featured">
+ <div class="container">
+    <div class="sec-head"><div><h2 class="sec-title" data-editable data-editable-key="featuredTitle">Destinations</h2>
+    <p class="sec-sub" data-editable data-editable-key="featuredSub">Explore places and attractions recommended for visitors.</p></div>
+    <button type="button" class="add-btn add-sec" onclick="openAddWin('featured')">+ Add Destination</button></div>
+    <div class="grid grid-3" id="featuredGrid"></div>
+ </div>
+</section>
+
+<!-- ============ NEWS ============ -->
+<section id="news" style="background:#fff">
+ <div class="container">
+    <div class="sec-head"><div><h2 class="sec-title" data-editable data-editable-key="newsTitle">Travel News</h2>
+    <p class="sec-sub" data-editable data-editable-key="newsSub">Travel updates, stories, and information for visitors.</p></div>
+    <button type="button" class="add-btn add-sec" onclick="openAddWin('news')">+ Add News</button></div>
+    <div class="grid grid-3" id="newsGrid"></div>
+ </div>
+</section>
+
+<!-- ============ LATEST ============ -->
+<section id="latest">
+ <div class="container">
+    <div class="sec-head"><div><h2 class="sec-title" data-editable data-editable-key="latestTitle">Tours &amp; Offers</h2>
+    <p class="sec-sub" data-editable data-editable-key="latestSub">Discover available tours, packages, activities, and special offers.</p></div>
+    <button type="button" class="add-btn add-sec" onclick="openAddWin('latest')">+ Add Tour / Offer</button></div>
+    <div class="grid grid-2" id="latestGrid"></div>
+ </div>
+</section>
+
+<!-- ============ CONTACT ============ -->
+<section id="contact" style="background:#fff">
+ <div class="container">
+    <h2 class="sec-title" data-editable data-editable-key="contactTitle">Contact</h2>
+    <p class="sec-sub" data-editable data-editable-key="contactSub">Get in touch for questions, assistance, and visitor information.</p>
+    <div class="contact-grid">
+      <div id="contactInfo"></div>
+      <form onsubmit="event.preventDefault();alert('Thanks! We will get back to you soon.')">
+        <input type="text" placeholder="Your name" required>
+        <input type="email" placeholder="Your email" required>
+        <textarea rows="5" placeholder="Your message" required></textarea>
+        <button type="submit" class="btn" style="margin-top:0">Send Message</button>
+      </form>
+    </div>
+ </div>
+</section>
+
+<footer>
+ <p data-editable data-editable-key="footerText" id="footerText">© 2026 Tourism Website. All rights reserved.</p>
+ <a href="#" onclick="document.getElementById('loginModal').classList.add('open');return false;" style="color:#5f7a74;font-size:.8rem">Admin Login</a>
+</footer>
+
+</div><!-- /mainSite -->
+
+<!-- ============ ADMIN BAR & PANEL ============ -->
+<div id="adminBar">
+ <strong>Admin Mode</strong>
+ <button type="button" class="add-btn" onclick="openAddWin()">➕ New Card</button>
+ <button type="button" class="add-btn" onclick="openPanel()">⚙ Settings & Content</button>
+ <button type="button" class="del-btn" onclick="exitAdmin()">Exit Admin</button>
+</div>
+
+<div id="overlay" onclick="closePanel()"></div>
+<aside id="panel">
+ <div class="panel-section-title">Website Content</div>
+ <h2>⚙ Admin Panel</h2>
+ <h3>Branding</h3>
+ <label>Site name</label><input id="pSiteName" onchange="saveSetting('siteName',this.value)">
+ <label>Logo image</label><input type="file" accept="image/*" onchange="uploadLogo(this)">
+ <button type="button" class="del-btn" onclick="removeLogo()">Remove logo</button>
+
+ <h3>Colors</h3>
+ <label>Primary color</label><input type="color" id="pPrimary" onchange="saveSetting('primary',this.value)">
+ <label>Accent color</label><input type="color" id="pAccent" onchange="saveSetting('accent',this.value)">
+
+ <h3>Fonts — Customize All Text</h3>
+ <label>All website text (base font)</label>
+ <select id="pAllFont" onchange="saveSetting('allFont',this.value);applySettings()">
+   <option value="'Segoe UI',sans-serif">Segoe UI</option><option value="Arial,sans-serif">Arial</option><option value="Georgia,serif">Georgia</option><option value="'Times New Roman',serif">Times New Roman</option><option value="'Courier New',monospace">Courier New</option><option value="Verdana,sans-serif">Verdana</option><option value="'Trebuchet MS',sans-serif">Trebuchet MS</option><option value="Impact,sans-serif">Impact</option><option value="'Comic Sans MS',cursive">Comic Sans MS</option><option value="'Barabara',sans-serif">Barabara</option>
+ </select>
+ <label>Header / site name</label>
+ <select id="pHeaderFont" onchange="saveSetting('headerFont',this.value);applySettings()">
+   <option value="'Segoe UI',sans-serif">Segoe UI</option><option value="Arial,sans-serif">Arial</option><option value="Georgia,serif">Georgia</option><option value="'Times New Roman',serif">Times New Roman</option><option value="'Courier New',monospace">Courier New</option><option value="Verdana,sans-serif">Verdana</option><option value="'Trebuchet MS',sans-serif">Trebuchet MS</option><option value="Impact,sans-serif">Impact</option><option value="'Comic Sans MS',cursive">Comic Sans MS</option><option value="'Barabara',sans-serif">Barabara</option>
+ </select>
+ <label>Headings (H1, H2, H3, section titles)</label>
+ <select id="pHeadFont" onchange="saveSetting('headFont',this.value);applySettings()">
+   <option value="inherit">Default (theme)</option><option value="'Segoe UI',sans-serif">Segoe UI</option><option value="Arial,sans-serif">Arial</option><option value="Georgia,serif">Georgia</option><option value="'Times New Roman',serif">Times New Roman</option><option value="'Courier New',monospace">Courier New</option><option value="Verdana,sans-serif">Verdana</option><option value="'Trebuchet MS',sans-serif">Trebuchet MS</option><option value="Impact,sans-serif">Impact</option><option value="'Comic Sans MS',cursive">Comic Sans MS</option><option value="'Barabara',sans-serif">Barabara</option>
+ </select>
+ <label>Body / paragraphs / descriptions</label>
+ <select id="pBodyFont" onchange="saveSetting('bodyFont',this.value);applySettings()">
+   <option value="'Segoe UI',sans-serif">Segoe UI</option><option value="Arial,sans-serif">Arial</option><option value="Georgia,serif">Georgia</option><option value="'Times New Roman',serif">Times New Roman</option><option value="'Courier New',monospace">Courier New</option><option value="Verdana,sans-serif">Verdana</option><option value="'Trebuchet MS',sans-serif">Trebuchet MS</option><option value="'Comic Sans MS',cursive">Comic Sans MS</option><option value="'Barabara',sans-serif">Barabara</option>
+ </select>
+ <label>Navigation menu</label>
+ <select id="pNavFont" onchange="saveSetting('navFont',this.value);applySettings()">
+   <option value="'Segoe UI',sans-serif">Segoe UI</option><option value="Arial,sans-serif">Arial</option><option value="Georgia,serif">Georgia</option><option value="'Times New Roman',serif">Times New Roman</option><option value="'Trebuchet MS',sans-serif">Trebuchet MS</option><option value="Impact,sans-serif">Impact</option><option value="'Comic Sans MS',cursive">Comic Sans MS</option><option value="'Barabara',sans-serif">Barabara</option>
+ </select>
+ <label>Hero text</label>
+ <select id="pHeroFont" onchange="saveSetting('heroFont',this.value);applySettings()">
+   <option value="'Segoe UI',sans-serif">Segoe UI</option><option value="Arial,sans-serif">Arial</option><option value="Georgia,serif">Georgia</option><option value="'Times New Roman',serif">Times New Roman</option><option value="'Trebuchet MS',sans-serif">Trebuchet MS</option><option value="Impact,sans-serif">Impact</option><option value="'Comic Sans MS',cursive">Comic Sans MS</option><option value="'Barabara',sans-serif">Barabara</option>
+ </select>
+ <label>Buttons / badges</label>
+ <select id="pButtonFont" onchange="saveSetting('buttonFont',this.value);applySettings()">
+   <option value="inherit">Same as headings</option><option value="'Segoe UI',sans-serif">Segoe UI</option><option value="Arial,sans-serif">Arial</option><option value="Georgia,serif">Georgia</option><option value="'Times New Roman',serif">Times New Roman</option><option value="'Trebuchet MS',sans-serif">Trebuchet MS</option><option value="Impact,sans-serif">Impact</option><option value="'Comic Sans MS',cursive">Comic Sans MS</option><option value="'Barabara',sans-serif">Barabara</option>
+ </select>
+ <label>Footer text</label>
+ <select id="pFooterFont" onchange="saveSetting('footerFont',this.value);applySettings()">
+   <option value="'Segoe UI',sans-serif">Segoe UI</option><option value="Arial,sans-serif">Arial</option><option value="Georgia,serif">Georgia</option><option value="'Times New Roman',serif">Times New Roman</option><option value="'Courier New',monospace">Courier New</option><option value="Verdana,sans-serif">Verdana</option><option value="'Trebuchet MS',sans-serif">Trebuchet MS</option><option value="Impact,sans-serif">Impact</option><option value="'Comic Sans MS',cursive">Comic Sans MS</option><option value="'Barabara',sans-serif">Barabara</option>
+ </select>
+ <label>Admin panel text</label>
+ <select id="pAdminFont" onchange="saveSetting('adminFont',this.value);applySettings()">
+   <option value="'Segoe UI',sans-serif">Segoe UI</option><option value="Arial,sans-serif">Arial</option><option value="Georgia,serif">Georgia</option><option value="'Times New Roman',serif">Times New Roman</option><option value="'Trebuchet MS',sans-serif">Trebuchet MS</option><option value="'Comic Sans MS',cursive">Comic Sans MS</option><option value="'Barabara',sans-serif">Barabara</option>
+ </select>
+ <label>Text size: <span id="pScaleVal"></span></label>
+ <input type="range" id="pScale" min="13" max="21" step="1" oninput="saveSetting('fontScale',this.value+'px');applySettings();document.getElementById('pScaleVal').textContent=this.value+'px'">
+
+ <h3>Backgrounds</h3>
+ <label>Page background color</label><input type="color" id="pBgColor" onchange="saveSetting('bgColor',this.value);applySettings()">
+ <label>Page background image URL</label><input id="pBgImg" onchange="saveSetting('bgImg',this.value);applySettings()">
+ <label>Or upload page background image</label><input type="file" accept="image/*" onchange="uploadToSetting(this,'bgImg')">
+ <button type="button" class="del-btn" onclick="saveSetting('bgImg','');applySettings()">Remove page background</button>
+ <label>Hero background image URL</label><input id="pHeroImg" onchange="saveSetting('heroImg',this.value);applySettings()">
+ <label>Or upload hero background image</label><input type="file" accept="image/*" onchange="uploadToSetting(this,'heroImg')">
+
+ <h3>Hero</h3>
+ <label>Button text</label><input id="pHeroBtn" onchange="saveSetting('heroBtn',this.value);applyText()">
+
+ <h3>Footer</h3>
+ <input id="pFooter" onchange="saveSetting('footer',this.value);applyText()">
+
+ <h3>Contact Information</h3>
+ <label>Address</label><input id="pAddr" onchange="saveSetting('addr',this.value);renderExample()">
+ <label>Phone</label><input id="pPhone" onchange="saveSetting('phone',this.value);renderExample()">
+ <label>Email</label><input id="pEmail" onchange="saveSetting('email',this.value);renderExample()">
+ <label>Opening hours</label><input id="pHours" onchange="saveSetting('hours',this.value);renderExample()">
+
+ <p style="margin-top:24px;color:#6b7280;font-size:.85rem">Tip: while in Admin Mode, click any text on the page to edit it directly.</p>
+ <button type="button" class="add-btn" style="width:100%;margin-top:14px;padding:12px" onclick="saveAllChanges()">💾 Save Changes</button>
+ <div id="saveStatus" style="text-align:center;margin-top:8px;color:#16845f;font-size:.85rem;min-height:20px"></div>
+ <button type="button" class="del-btn" style="margin-top:12px" onclick="resetAll()">Reset everything to default</button>
+</aside>
+
+<!-- floating add-card window -->
+<div id="addWin">
+  <div class="aw-head" id="addWinHead">
+    <h3>➕ New Card</h3>
+    <button type="button" onclick="closeAddWin()">✕</button>
+  </div>
+  <div class="aw-body">
+    <div class="admin-field"><label>Add to section</label>
+      <select id="awSec">
+        <option value="featured">Destinations</option>
+        <option value="news">Travel News</option>
+        <option value="latest">Tours &amp; Offers</option>
+        <option value="features">About</option>
+        <option value="announce">Announcements</option>
+      </select>
+    </div>
+    <div class="admin-field"><label>Title</label><input id="awTitle" placeholder="Example"></div>
+    <div class="admin-field"><label>Tag / Badge (optional)</label><input id="awTag" placeholder="Example"></div>
+    <div class="admin-field"><label>Short description</label><input id="awText" placeholder="Shows on the card"></div>
+    <div class="admin-field"><label>Full description (optional)</label><textarea id="awLong" rows="4" placeholder="Shows on the card's own page"></textarea></div>
+    <div style="display:flex;gap:10px">
+      <div class="admin-field" style="flex:1"><label>Price (optional)</label><input id="awPrice" placeholder="Example"></div>
+      <div class="admin-field" style="flex:1"><label>Location (optional)</label><input id="awLocation" placeholder="Example"></div>
+    </div>
+    <div class="admin-field"><label>Photos (upload one or more)</label><input type="file" id="awFiles" accept="image/*" multiple></div>
+    <div class="admin-field"><label>…or a photo URL</label><input id="awImgUrl" placeholder="Example"></div>
+    <div class="aw-thumbs" id="awThumbs"></div>
+    <div style="display:flex;gap:10px;margin-top:14px">
+      <button type="button" class="add-btn" onclick="createCardFromWindow()">Create Card</button>
+      <button type="button" class="del-btn" onclick="closeAddWin()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<div id="loginModal">
+ <div class="box">
+    <h3>Admin Login</h3>
+    <p style="color:#6b7280;font-size:.85rem;margin:8px 0 16px">Example</p>
+    <input type="password" id="pw" placeholder="Password" onkeydown="if(event.key==='Enter')tryLogin()">
+    <br><br>
+    <button type="button" class="add-btn" onclick="tryLogin()">Enter</button>
+    <button type="button" class="del-btn" onclick="document.getElementById('loginModal').classList.remove('open')">Cancel</button>
+ </div>
+</div>
+
+<script>
+/* ---------- data model ---------- */
+const DEFAULTS = {
+  settings:{siteName:"Tourism Website",logo:"",primary:"#0e7c66",accent:"#f2a63b",heroImg:"",heroBtn:"Explore Destinations",footer:"© 2026 Tourism Website. All rights reserved.",addr:"Add your destination address",phone:"Add your contact number",email:"Add your email address",hours:"Add your opening hours",allFont:"'Segoe UI',sans-serif",headerFont:"'Segoe UI',sans-serif",headFont:"inherit",bodyFont:"'Segoe UI',sans-serif",navFont:"'Segoe UI',sans-serif",heroFont:"'Segoe UI',sans-serif",buttonFont:"inherit",footerFont:"'Segoe UI',sans-serif",adminFont:"'Segoe UI',sans-serif"},
+  features:[{icon:"",title:"About",text:"Add information about the destination, organization, or tourism office here."}],
+  announce:[{date:"",title:"Announcements",text:"Add your latest announcement here."}],
+  featured:[{img:"",tag:"Destination",title:"Destinations",text:"Add a destination or attraction here."}],
+  news:[{img:"",tag:"Travel News",title:"Travel News",text:"Add a travel news article here."}],
+  latest:[{img:"",tag:"Tour & Offer",title:"Tours & Offers",text:"Add a tour, package, activity, or special offer here."}]
+};
+let data = load();
+function safeText(value, fallback="") { return value == null ? fallback : String(value); }
+function showSaveStatus(message, ok=true){ const el=document.getElementById("saveStatus"); if(!el)return; el.textContent=message; el.style.color=ok?"#16845f":"#b42318"; }
+
+function load(){
+  try{
+    const raw = localStorage.getItem("tourismSite");
+    const s = raw ? JSON.parse(raw) : null;
+    if(!s) return JSON.parse(JSON.stringify(DEFAULTS));
+    // merge so new default keys appear
+    s.settings = {...DEFAULTS.settings, ...s.settings};
+    for(const k of ["features","announce","featured","news","latest"]) if(!Array.isArray(s[k])) s[k]=JSON.parse(JSON.stringify(DEFAULTS[k]));
+    // Migrate older "Example" content to the correct navigation category names.
+    const labels = {features:"About", announce:"Announcements", featured:"Destinations", news:"Travel News", latest:"Tours & Offers"};
+    for(const k of Object.keys(labels)){
+      if(Array.isArray(s[k])) s[k].forEach(item=>{
+        if(item && item.title === "Example") item.title = labels[k];
+        if(item && item.tag === "Example") item.tag = labels[k];
+      });
+    }
+    const txtMap = {featuresTitle:"About", announceTitle:"Announcements", featuredTitle:"Destinations", newsTitle:"Travel News", latestTitle:"Tours & Offers", contactTitle:"Contact"};
+    for(const [key,label] of Object.entries(txtMap)){
+      const storageKey = "txt_" + key;
+      if(s.settings[storageKey] === "Example") s.settings[storageKey] = label;
+    }
+    return s;
+  }catch(e){ return JSON.parse(JSON.stringify(DEFAULTS)); }
+}
+function persist(){
+  try{
+    localStorage.setItem("tourismSite", JSON.stringify(data));
+    return true;
+  }catch(e){
+    console.error("Could not save site data:", e);
+    const status=document.getElementById("saveStatus");
+    if(status){ status.textContent="⚠ Could not save in this browser."; status.style.color="#b42318"; }
+    return false;
+  }
+}
+
+/* ---------- editing helpers ---------- */
+function saveEditable(el){
+  const key = el.dataset.editableKey;
+  if(!key) return false;
+  data.settings["txt_"+key] = el.innerHTML;
+  return persist();
+}
+function captureAllEditableText(){
+  document.querySelectorAll("[data-editable][data-editable-key]").forEach(el=>{
+    data.settings["txt_"+el.dataset.editableKey] = el.innerHTML;
+  });
+  // Structured fields are also captured directly from what is visible.
+  const siteName = document.getElementById("siteName");
+  const heroBtn = document.getElementById("heroBtn");
+  const footer = document.getElementById("footerText");
+  if(siteName) data.settings.siteName = siteName.textContent.trim();
+  if(heroBtn) data.settings.heroBtn = heroBtn.textContent.trim();
+  if(footer) data.settings.footer = footer.innerHTML;
+}
+function applyText(){
+  document.querySelectorAll("[data-editable][data-editable-key]").forEach(el=>{
+    const saved = data.settings["txt_"+el.dataset.editableKey];
+    if(saved !== undefined) el.innerHTML = saved;
+  });
+  // Structured settings remain the source of truth for these controls.
+  const siteName=document.getElementById("siteName");
+  const heroBtn=document.getElementById("heroBtn");
+  const footer=document.getElementById("footerText");
+  if(siteName && data.settings.siteName !== undefined) siteName.textContent = data.settings.siteName;
+  if(heroBtn && data.settings.heroBtn !== undefined) heroBtn.textContent = data.settings.heroBtn;
+  if(footer && data.settings.footer !== undefined) footer.innerHTML = data.settings.footer;
+}
+function applySettings(){
+  const s = data.settings;
+  const root = document.documentElement.style;
+  root.setProperty("--primary", s.primary || "#0e7c66");
+  root.setProperty("--accent", s.accent || "#f2a63b");
+  root.setProperty("--fontAll", s.allFont || "'Segoe UI',sans-serif");
+  root.setProperty("--fontHeader", s.headerFont || s.allFont || "'Segoe UI',sans-serif");
+  root.setProperty("--fontHead", s.headFont && s.headFont !== "inherit" ? s.headFont : (s.allFont || "'Segoe UI',sans-serif"));
+  root.setProperty("--fontBody", s.bodyFont || s.allFont || "'Segoe UI',sans-serif");
+  root.setProperty("--fontNav", s.navFont || s.bodyFont || "'Segoe UI',sans-serif");
+  root.setProperty("--fontHero", s.heroFont || s.bodyFont || "'Segoe UI',sans-serif");
+  root.setProperty("--fontButton", s.buttonFont && s.buttonFont !== "inherit" ? s.buttonFont : (s.headFont || s.allFont || "'Segoe UI',sans-serif"));
+  root.setProperty("--fontFooter", s.footerFont || s.bodyFont || s.allFont || "'Segoe UI',sans-serif");
+  root.setProperty("--fontAdmin", s.adminFont || s.allFont || "'Segoe UI',sans-serif");
+  root.setProperty("--fontScale", s.fontScale || "16px");
+  document.body.style.backgroundColor = s.bgColor || "";
+  document.body.style.backgroundImage = s.bgImg ? cssUrl(s.bgImg) : "";
+  document.body.style.backgroundSize = "cover";
+  document.body.style.backgroundAttachment = "fixed";
+  const hero = document.getElementById("hero");
+  hero.style.backgroundImage = s.heroImg ? cssUrl(s.heroImg) : 'none';
+  const logo = document.getElementById("logoImg");
+  if(s.logo){ logo.src = s.logo; logo.style.display="block"; } else logo.style.display="none";
+  document.title = s.siteName + " — Tourism";
+}
+/* generic file-upload → settings key */
+function uploadToSetting(input,key){
+  const f = input.files[0]; if(!f) return;
+  const r = new FileReader();
+  r.onload = ()=>{ data.settings[key] = r.result; persist(); applySettings(); };
+  r.readAsDataURL(f);
+}
+/* card image upload (inline on cards + detail page) */
+function uploadCardImg(sec,i,input){
+  const f = input.files[0]; if(!f) return;
+  const r = new FileReader();
+  r.onload = ()=>{ data[sec][i].img = r.result; persist(); renderCards(); renderCardPage(); };
+  r.readAsDataURL(f);
+}
+
+/* ---------- renderers ---------- */
+const esc = t => String(t ?? "")
+  .replace(/&/g,"&amp;")
+  .replace(/</g,"&lt;")
+  .replace(/>/g,"&gt;")
+  .replace(/"/g,"&quot;")
+  .replace(/'/g,"&#39;");
+const jsArg = t => JSON.stringify(String(t ?? ""))
+  .replace(/</g,"\\u003c")
+  .replace(/>/g,"\\u003e")
+  .replace(/&/g,"\\u0026");
+const cssUrl = v => `url("${String(v ?? "").replace(/["\\]/g, "")}")`;
+function renderCards(){
+  const g = id => document.getElementById(id);
+  g("featuresGrid").innerHTML = data.features.map((c,i)=>`
+    <div class="card" data-sec="features" data-i="${i}"><div class="card-body">
+      ${c.icon?`<div class="icon-big" data-f="icon" contenteditable>${c.icon}</div>`:""}
+      <h3 data-f="title" contenteditable>${esc(c.title)}</h3>
+      <p data-f="text" contenteditable>${esc(c.text)}</p>
+    </div><button type="button" class="del-card" title="Delete" onclick="event.stopPropagation();deleteCard('features',${i})">✕</button></div>`).join("");
+  g("announceList").innerHTML = data.announce.map((c,i)=>`
+    <div class="announce" data-sec="announce" data-i="${i}">
+      <time data-f="date" contenteditable>${esc(c.date)}</time>
+      <h3 data-f="title" contenteditable>${esc(c.title)}</h3>
+      <p data-f="text" contenteditable>${esc(c.text)}</p>
+      <button type="button" class="del-card" title="Delete" onclick="event.stopPropagation();deleteCard('announce',${i})">✕</button>
+    </div>`).join("");
+  const card = (sec,arr)=>arr.map((c,i)=>`
+    <div class="card" data-sec="${sec}" data-i="${i}" onclick="openCard(event,${jsArg(sec)},${i})" style="cursor:pointer">
+      ${c.img?`<img src="${esc(c.img)}" alt="">`:`<div class="img-ph">🖼️<span>No image yet</span></div>`}
+      <label class="img-up" title="Change picture" onclick="event.preventDefault();event.stopPropagation()">📷<input type="file" accept="image/*" style="display:none" onchange="uploadCardImg('${sec}',${i},this)"></label>
+      <div class="card-body">
+        ${c.tag?`<span class="badge" data-f="tag" contenteditable>${esc(c.tag)}</span>`:""}
+        <h3 data-f="title" contenteditable>${esc(c.title)}</h3>
+        <p data-f="text" contenteditable>${esc(c.text)}</p>
+      </div>
+      <button type="button" class="del-card" title="Delete" onclick="event.stopPropagation();deleteCard('${sec}',${i})">✕</button>
+    </div>`).join("");
+  g("featuredGrid").innerHTML = card("featured",data.featured);
+  g("newsGrid").innerHTML = card("news",data.news);
+  g("latestGrid").innerHTML = card("latest",data.latest);
+  wireCardEditing();
+}
+function wireCardEditing(){
+  const admin = document.body.classList.contains("admin");
+  document.querySelectorAll("[data-sec]").forEach(cardEl=>{
+    const sec = cardEl.dataset.sec, i = +cardEl.dataset.i;
+    cardEl.querySelectorAll("[data-f]").forEach(f=>{
+      f.contentEditable = admin; // visitors must never be able to edit content
+      f.oninput = ()=>{ data[sec][i][f.dataset.f] = f.textContent; persist(); };
+      f.onblur  = ()=>{ // tag: remove badge if emptied
+        if(f.dataset.f==="tag" && !f.textContent.trim()){ const c=data[sec][i]; c.tag=""; persist(); renderCards(); }
+        if(f.dataset.f==="icon" && !f.textContent.trim()){ const c=data[sec][i]; c.icon=""; persist(); renderCards(); }
+      };
+    });
+  });
+}
+function renderExample(){
+  const s = data.settings;
+  document.getElementById("contactInfo").innerHTML = `
+    <div class="info-line">📍 <span contenteditable data-ce="addr">${esc(s.addr)}</span></div>
+    <div class="info-line">📞 <span contenteditable data-ce="phone">${esc(s.phone)}</span></div>
+    <div class="info-line">✉️ <span contenteditable data-ce="email">${esc(s.email)}</span></div>
+    <div class="info-line">🕐 <span contenteditable data-ce="hours">${esc(s.hours)}</span></div>`;
+  document.querySelectorAll("[data-ce]").forEach(el=>{
+    el.contentEditable = document.body.classList.contains("admin"); // read-only for visitors
+    el.oninput = ()=>{ if(document.body.classList.contains("admin")){ data.settings[el.dataset.ce] = el.textContent; persist(); } };
+  });
+}
+
+/* ---------- admin actions ---------- */
+const SECTION_LABELS = {
+  features:"About",
+  announce:"Announcements",
+  featured:"Destinations",
+  news:"Travel News",
+  latest:"Tours & Offers"
+};
+function addCard(sec){
+  const blank = sec==="features" ? {icon:"",title:"About",text:"Add information here."}
+    : sec==="announce" ? {date:"",title:"Announcements",text:"Add your announcement here."}
+    : {img:"",tag:SECTION_LABELS[sec] || "Content",title:SECTION_LABELS[sec] || "Content",text:"Add your content here.",longDesc:"",gallery:[],price:"",location:""};
+  data[sec].push(blank); persist(); renderCards();
+  if(location.hash.startsWith("#card/")){ history.replaceState(null,"",location.pathname+location.search); renderCardPage(); }
+  const list = document.querySelector(`[data-sec="${sec}"][data-i="${data[sec].length-1}"]`);
+  list && list.scrollIntoView({behavior:"smooth",block:"center"});
+}
+
+/* ---------- floating add-card window ---------- */
+let awPhotos = []; // uploaded photos held while the window is open
+function openAddWin(preSec){
+  awPhotos = [];
+  ["awTitle","awTag","awText","awLong","awPrice","awLocation","awImgUrl","awFiles"].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=""; });
+  document.getElementById("awThumbs").innerHTML = "";
+  if(preSec) document.getElementById("awSec").value = preSec;
+  const w = document.getElementById("addWin");
+  w.classList.add("open");
+  w.style.top = "60px"; w.style.left = "50%"; w.style.transform = "translateX(-50%)";
+}
+function closeAddWin(){ document.getElementById("addWin").classList.remove("open"); }
+document.getElementById("awFiles").addEventListener("change", e=>{
+  [...e.target.files].forEach(f=>{
+    const r = new FileReader();
+    r.onload = ()=>{ awPhotos.push(r.result); renderAwThumbs(); };
+    r.readAsDataURL(f);
+  });
+  e.target.value = ""; // allow re-picking the same file
+});
+function renderAwThumbs(){
+  document.getElementById("awThumbs").innerHTML = awPhotos.map((p,i)=>
+    `<img src="${esc(p)}" title="Click to remove" onclick="awPhotos.splice(${i},1);renderAwThumbs()">`).join("");
+}
+function createCardFromWindow(){
+  const sec = document.getElementById("awSec").value;
+  const title = document.getElementById("awTitle").value.trim() || (SECTION_LABELS[sec] || "Content");
+  const url = document.getElementById("awImgUrl").value.trim();
+  const photos = [...awPhotos];
+  if(url) photos.unshift(url);
+  const card = sec==="features"
+    ? {icon:"", title, text: document.getElementById("awText").value.trim() || "Add your content here.", longDesc: document.getElementById("awLong").value.trim()}
+    : sec==="announce"
+    ? {date:"", title, text: document.getElementById("awText").value.trim() || "Add your content here.", longDesc: document.getElementById("awLong").value.trim()}
+    : {img: photos[0] || "", tag: document.getElementById("awTag").value.trim(), title,
+       text: document.getElementById("awText").value.trim() || "Add your content here.",
+       longDesc: document.getElementById("awLong").value.trim(),
+       gallery: photos.slice(1), price: document.getElementById("awPrice").value.trim(), location: document.getElementById("awLocation").value.trim()};
+  data[sec].push(card); persist(); renderCards(); closeAddWin();
+  if(location.hash.startsWith("#card/")){ history.replaceState(null,"",location.pathname+location.search); renderCardPage(); }
+  const list = document.querySelector(`[data-sec="${sec}"][data-i="${data[sec].length-1}"]`);
+  list && list.scrollIntoView({behavior:"smooth",block:"center"});
+}
+/* drag the floating window by its header */
+(function(){
+  const win = document.getElementById("addWin"), head = document.getElementById("addWinHead");
+  let sx=0, sy=0, ox=0, oy=0, dragging=false;
+  head.addEventListener("mousedown", e=>{
+    if(e.target.tagName==="BUTTON") return;
+    const r = win.getBoundingClientRect();
+    // switch to free positioning
+    win.style.transform = "none";
+    win.style.left = r.left+"px"; win.style.top = r.top+"px";
+    dragging = true; sx=e.clientX; sy=e.clientY; ox=r.left; oy=r.top;
+    e.preventDefault();
+  });
+  document.addEventListener("mousemove", e=>{
+    if(!dragging) return;
+    win.style.left = (ox + e.clientX - sx) + "px";
+    win.style.top  = (oy + e.clientY - sy) + "px";
+  });
+  document.addEventListener("mouseup", ()=> dragging=false);
+  head.addEventListener("touchstart", e=>{
+    if(e.target.tagName==="BUTTON") return;
+    const r = win.getBoundingClientRect();
+    win.style.transform = "none";
+    win.style.left = r.left+"px"; win.style.top = r.top+"px";
+    dragging = true; sx=e.touches[0].clientX; sy=e.touches[0].clientY; ox=r.left; oy=r.top;
+  },{passive:true});
+  document.addEventListener("touchmove", e=>{
+    if(!dragging) return;
+    win.style.left = (ox + e.touches[0].clientX - sx) + "px";
+    win.style.top  = (oy + e.touches[0].clientY - sy) + "px";
+  },{passive:true});
+  document.addEventListener("touchend", ()=> dragging=false);
+})();
+document.addEventListener("click", e=>{
+  const cardEl = e.target.closest("[data-sec]");
+  if(cardEl && document.body.classList.contains("admin") && e.shiftKey){
+    const sec=cardEl.dataset.sec, i=+cardEl.dataset.i;
+    if(confirm("Delete this "+sec+" card?")){ data[sec].splice(i,1); persist(); renderCards(); renderExample(); applyText(); }
+  }
+});
+
+/* ---------- card detail page ---------- */
+function openCard(event,sec,i){
+  if(event) event.stopPropagation();
+  if(document.body.classList.contains("admin") && e_isEditing()) return;
+  location.hash = "card/"+sec+"/"+i;
+}
+function e_isEditing(){
+  const a = document.activeElement;
+  return a && (a.isContentEditable || a.tagName==="INPUT" || a.tagName==="TEXTAREA");
+}
+function goBackHome(){ location.hash = ""; }
+let lastHomeScroll = 0;
+let onCardPage = false;
+function renderCardPage(){
+  const m = location.hash.match(/^#card\/(\w+)\/(\d+)$/);
+  const page = document.getElementById("cardPage");
+  const main = document.getElementById("mainSite");
+  if(!m){
+    // only restore scroll when we're actually coming back FROM a card page;
+    // never interfere with normal anchor navigation (nav links, hero button, etc.)
+    if(onCardPage){ page.classList.remove("open"); main.style.display=""; window.scrollTo(0, lastHomeScroll); }
+    onCardPage = false;
+    return;
+  }
+  onCardPage = true;
+  const sec = m[1], i = +m[2];
+  const c = (data[sec]||[])[i];
+  if(!c){ goBackHome(); return; }
+  if(main.style.display !== "none") lastHomeScroll = window.scrollY; // remember home position only when leaving home
+  main.style.display = "none";
+  page.classList.add("open");
+  document.getElementById("dImg").src = c.img || "";
+  document.getElementById("dImg").style.display = c.img ? "" : "none";
+  const tagEl = document.getElementById("dTag");
+  tagEl.textContent = c.tag || ""; tagEl.style.display = c.tag ? "" : "none";
+  document.getElementById("dTitle").textContent = c.title || "";
+  document.getElementById("dText").textContent = c.text || "";
+  const iconEl = document.getElementById("dIcon");
+  iconEl.textContent = c.icon || ""; iconEl.style.display = c.icon ? "" : "none";
+  // meta line (price / location / date) — shown only if filled in
+  const metaEl = document.getElementById("dMeta");
+  const metaBits = [];
+  if(c.price) metaBits.push("💰 " + c.price);
+  if(c.location) metaBits.push("📍 " + c.location);
+  if(c.date) metaBits.push("📅 " + c.date);
+  metaEl.innerHTML = metaBits.map(b=>`<span>${esc(b)}</span>`).join("");
+  metaEl.style.display = metaBits.length ? "" : "none";
+  // long description
+  const longEl = document.getElementById("dLong");
+  longEl.textContent = c.longDesc || "";
+  longEl.style.display = c.longDesc ? "" : "none";
+  // photo gallery (click a photo to view it big)
+  const galEl = document.getElementById("dGallery");
+  const gal = Array.isArray(c.gallery) ? c.gallery : [];
+  galEl.innerHTML = gal.map((src,gi)=>`
+    <div class="gallery-item">
+      <img src="${esc(src)}" alt="" onclick="openLightbox(${esc(jsArg(src))})">
+      ${document.body.classList.contains("admin")?`<button type="button" class="del-card" title="Remove photo" onclick="event.stopPropagation();removeGalleryImg('${sec}',${i},${gi})">✕</button>`:""}
+    </div>`).join("");
+  galEl.style.display = gal.length ? "" : "none";
+  // admin editing fields
+  const admin = document.body.classList.contains("admin");
+  const af = document.getElementById("dAdminFields");
+  if(admin){
+    const isImgSec = sec!=="features" && sec!=="announce";
+    const fields = sec==="features" ? [["icon","Icon (emoji)"],["title","Title"],["text","Short description"]]
+      : sec==="announce" ? [["date","Date (YYYY-MM-DD)"],["title","Title"],["text","Short description"]]
+      : [["img","Main image URL"],["tag","Tag / Badge"],["title","Title"],["text","Short description"],["price","Price (optional)"],["location","Location (optional)"]];
+    const upload = isImgSec ?
+      `<div class="admin-field"><label>Or upload a main picture for this card</label><input type="file" accept="image/*" onchange="uploadCardImg('${sec}',${i},this)"></div>` : "";
+    const longField = `<div class="admin-field"><label>Full description (shown on this page)</label><textarea id="af_longDesc" rows="5" onchange="editCardField('${sec}',${i},'longDesc',this.value)">${esc(c.longDesc||"")}</textarea></div>`;
+    const galAdmin = isImgSec ? `
+      <h3 style="margin-top:24px">📷 Photo gallery</h3>
+      <div class="admin-field"><label>Add photo by URL</label><input id="galUrl" placeholder="Example"></div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button type="button" class="add-btn" onclick="addGalleryUrl('${sec}',${i})">Add URL photo</button>
+        <label class="add-btn" style="display:inline-block;line-height:2.4;cursor:pointer">Upload photo<input type="file" accept="image/*" style="display:none" onchange="addGalleryFile('${sec}',${i},this)"></label>
+      </div>
+      <p style="font-size:.8rem;color:#6b7280;margin-top:8px">Click ✕ on any gallery photo above to remove it.</p>` : "";
+    af.innerHTML = `<h3 style="margin-top:28px">⚙ Edit this card — ${SECTION_LABELS[sec] || sec}</h3>` + fields.map(([k,lbl])=>
+      `<div class="admin-field"><label>${lbl}</label><input id="af_${k}" value="${esc(c[k]||"")}" onchange="editCardField('${sec}',${i},'${k}',this.value)"></div>`
+    ).join("") + upload + longField + galAdmin + `<button type="button" class="del-btn" style="margin-top:16px" onclick="event.stopPropagation();deleteCard('${sec}',${i},true)">Delete this card</button>`;
+  } else af.innerHTML = "";
+  window.scrollTo(0,0);
+}
+/* gallery + lightbox helpers */
+function openLightbox(src){ document.getElementById("lightboxImg").src = src; document.getElementById("lightbox").classList.add("open"); }
+function addGalleryUrl(sec,i){
+  const v = document.getElementById("galUrl").value.trim();
+  if(!v) return alert("Paste an image URL first.");
+  const c = data[sec][i];
+  c.gallery = Array.isArray(c.gallery) ? c.gallery : [];
+  c.gallery.push(v); persist(); renderCardPage();
+}
+function addGalleryFile(sec,i,input){
+  const f = input.files[0]; if(!f) return;
+  const r = new FileReader();
+  r.onload = ()=>{ const c = data[sec][i]; c.gallery = Array.isArray(c.gallery) ? c.gallery : []; c.gallery.push(r.result); persist(); renderCardPage(); };
+  r.readAsDataURL(f);
+}
+function removeGalleryImg(sec,i,gi){
+  if(!confirm("Remove this photo from the gallery?")) return;
+  data[sec][i].gallery.splice(gi,1); persist(); renderCardPage();
+}
+function editCardField(sec,i,k,v){
+  data[sec][i][k] = v; persist(); renderCards(); renderCardPage();
+}
+function deleteCard(sec,i,fromDetail){
+  if(!confirm("Delete this "+sec+" card?")) return;
+  data[sec].splice(i,1); persist(); renderCards();
+  if(fromDetail || location.hash.startsWith("#card/")){
+    history.replaceState(null,"",location.pathname+location.search);
+    renderCardPage(); // returns to home at your previous scroll position
+  }
+}
+window.addEventListener("hashchange", renderCardPage);
+function tryLogin(){
+  const pw = document.getElementById("pw").value;
+  if(pw === (localStorage.getItem("adminPw")||"admin123")){
+    document.getElementById("pw").value = "";
+    document.getElementById("loginModal").classList.remove("open");
+    document.body.classList.add("admin");
+    enableInlineEdit();
+    renderCards(); renderExample(); renderCardPage(); // make fields editable now that we're admin
+  } else { document.getElementById("pw").value = ""; alert("Wrong password"); }
+}
+function exitAdmin(){ document.body.classList.remove("admin"); location.reload(); }
+function enableInlineEdit(){
+  document.querySelectorAll("[data-editable]").forEach(el=>{
+    if(!el.dataset.editableKey) return;
+    el.contentEditable = true;
+    el.oninput = ()=>saveEditable(el);
+    el.onblur = ()=>saveEditable(el);
+  });
+}
+function openPanel(){
+  const s = data.settings;
+  pSiteName.value=s.siteName; pPrimary.value=s.primary; pAccent.value=s.accent;
+  pAllFont.value = s.allFont || "'Segoe UI',sans-serif";
+  pHeaderFont.value = s.headerFont || s.allFont || "'Segoe UI',sans-serif";
+  pHeadFont.value = s.headFont || "inherit"; pBodyFont.value = s.bodyFont || s.allFont || "'Segoe UI',sans-serif";
+  pNavFont.value = s.navFont || s.headerFont || s.bodyFont || "'Segoe UI',sans-serif"; pHeroFont.value = s.heroFont || s.headFont || s.allFont || "'Segoe UI',sans-serif"; pButtonFont.value = s.buttonFont || "inherit"; pFooterFont.value = s.footerFont || s.bodyFont || s.allFont || "'Segoe UI',sans-serif"; pAdminFont.value = s.adminFont || "'Segoe UI',sans-serif";
+  pScale.value = parseInt(s.fontScale||16); document.getElementById("pScaleVal").textContent = (s.fontScale||"16px");
+  pBgColor.value = s.bgColor || "#faf9f6"; pBgImg.value = s.bgImg || "";
+  pHeroImg.value=s.heroImg; pHeroBtn.value=s.heroBtn; pFooter.value=s.footer;
+  pAddr.value=s.addr; pPhone.value=s.phone; pEmail.value=s.email; pHours.value=s.hours;
+  document.getElementById("panel").classList.add("open");
+  document.getElementById("overlay").classList.add("open");
+}
+function closePanel(){ document.getElementById("panel").classList.remove("open"); document.getElementById("overlay").classList.remove("open"); }
+function saveSetting(k,v){ data.settings[k]=v; persist(); }
+function saveAllChanges(){
+  try{
+    // Capture focused/unsaved inputs before persisting. onchange does not fire
+    // when the user clicks Save while an input is still focused.
+    const fields = {
+      siteName:"pSiteName", primary:"pPrimary", accent:"pAccent",
+      allFont:"pAllFont", headerFont:"pHeaderFont", headFont:"pHeadFont", bodyFont:"pBodyFont", navFont:"pNavFont",
+      heroFont:"pHeroFont", buttonFont:"pButtonFont", footerFont:"pFooterFont", adminFont:"pAdminFont",
+      fontScale:"pScale", bgColor:"pBgColor", bgImg:"pBgImg",
+      heroImg:"pHeroImg", heroBtn:"pHeroBtn", footer:"pFooter",
+      addr:"pAddr", phone:"pPhone", email:"pEmail", hours:"pHours"
+    };
+    Object.entries(fields).forEach(([key,id])=>{
+      const el=document.getElementById(id);
+      if(!el) return;
+      data.settings[key] = key === "fontScale" ? (el.value + "px") : el.value;
+    });
+    captureAllEditableText();
+    if(!persist()) throw new Error("Browser storage is unavailable or full.");
+    applySettings();
+    applyText();
+    renderExample();
+    renderCards();
+    renderCardPage();
+    showSaveStatus("✓ All changes saved successfully", true);
+    setTimeout(()=>showSaveStatus(""), 3000);
+  }catch(err){
+    console.error(err);
+    showSaveStatus("⚠ Unable to save changes. Check browser storage.", false);
+  }
+}
+function uploadLogo(input){
+  const f = input.files[0]; if(!f) return;
+  const r = new FileReader();
+  r.onload = ()=>{ data.settings.logo = r.result; persist(); applySettings(); };
+  r.readAsDataURL(f);
+}
+function removeLogo(){ data.settings.logo=""; persist(); applySettings(); }
+function resetAll(){
+  if(!confirm("Reset ALL content to defaults?")) return;
+  try{ localStorage.removeItem("tourismSite"); }
+  catch(e){ console.error("Could not reset site data:",e); }
+  location.reload();
+}
+
+/* secret: press Ctrl+Shift+A to open admin login */
+document.addEventListener("keydown", e=>{
+  if(e.ctrlKey && e.shiftKey && e.key.toLowerCase()==="a"){ e.preventDefault(); document.getElementById("loginModal").classList.add("open"); }
+});
+
+/* ---------- init ---------- */
+applySettings(); applyText(); renderCards(); renderExample(); renderCardPage();
+</script>
+</body>
+</html>
